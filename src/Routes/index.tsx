@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import 'react-native-gesture-handler';
 import LoginPage from '../pages/Login';
+import RegisterPage from '../pages/register';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,10 @@ export default function Routes() {
             <StatusBar style="auto" />
       
             <Stack.Navigator>
-                <Stack.Screen name="Contatos" component={LoginPage} />
+                <Stack.Screen name="Contatos" component={LoginPage} options={{
+                        headerShown: false,
+                    }}/>
+                <Stack.Screen name="Register" component={RegisterPage} />
             </Stack.Navigator>
 
         </NavigationContainer>

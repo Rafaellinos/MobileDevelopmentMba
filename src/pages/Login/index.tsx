@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Button, FlatList, Text, View, TextInput, StyleSheet, Dimensions} from 'react-native';
+import { Button, FlatList, Text, View, TextInput, StyleSheet, Dimensions, Alert} from 'react-native';
 
-export default function LoginPage() {
+import RegisterPage from '../register';
+
+export default function LoginPage({ navigation }: any) {
 
     const [ login, setLogin ] = useState('');
     const [ password, setpassword ] = useState('');
+    
+    interface currentUser {
+        login: string,
+        token: string,
+    }
+
     /*
     {
     "login": "rafael@email.com",
@@ -19,11 +27,22 @@ export default function LoginPage() {
     //     password = pass;
     // }
 
-    function teste() {
-        console.log(login);
-        console.log(password);
-        console.log('Teste');
-        let response = fetch(
+    function alertErrorLogin(error: string) {
+        Alert.alert(
+            "Erro ao tentar efetuar login!",
+            `Erro: ${error}`,
+            [
+                {
+                    text: "Ok",
+                    onPress: () => console.log("Ok pressed"),
+                }
+            ]
+        )
+    }
+
+    async function appLogin() {
+        console.log(`loggando ... ${login}:${password}`);
+        const response = await fetch(
             'https://example-ecommerce.herokuapp.com/user/login', {
                 method: 'POST',
                 headers: {
@@ -36,25 +55,12 @@ export default function LoginPage() {
                 })
             }
         );
-        response
-            .then(
-                res => {
-                    console.log(res.text());
-                    console.log(res.status);
-                    //res.json();
-                    return res;
-                }
-            )
-            .then(
-                (res) => {
-                    console.log(res);
-                    if (res.status === 200) {
-                        console.log("infeliz logou");
-                    } else {
-                        console.log("infeliz n logou");
-                    }
-                }
-            )
+        if (response.ok) {
+            let token: string = await response.text();
+            console.log(`login com sucesso: ${token}`);
+        } else {
+            alertErrorLogin(response.statusText);
+        }
     }
 
     return (
@@ -62,13 +68,20 @@ export default function LoginPage() {
             <Text style={styles.label}>Email</Text>
             <TextInput style={styles.input} onChangeText={log => setLogin(log)}/>
             <Text style={styles.label}>Senha</Text>
-            <TextInput style={styles.input} onChangeText={pass => setpassword(pass)} />
-
+            <TextInput 
+                secureTextEntry={true}
+                style={styles.input} onChangeText={pass => setpassword(pass)} />
             <Button
                 color="#f194ff"
                 title="Logar"
-                onPress={teste}>
+                onPress={appLogin}>
                 <Text>Entrar</Text>
+            </Button>
+            <Button
+                color="#f194ff"
+                title="Cadastrar"
+                onPress={() => navigation.navigate('Register')}>
+                <Text>Cadastrar</Text>
             </Button>
         </View>
     )
