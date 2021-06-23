@@ -1,36 +1,20 @@
+import { StatusBar } from "expo-status-bar";
 import React, { useState } from 'react';
-import { Button, FlatList, Text, View, TextInput, StyleSheet, Dimensions, Alert} from 'react-native';
+import { Image, TouchableOpacity, Button, FlatList, Text, View, TextInput, StyleSheet, Dimensions, Alert} from 'react-native';
 
-import RegisterPage from '../register';
+import styles from './style';
+import RegisterPage from '../Register';
 
 export default function LoginPage({ navigation }: any) {
 
     const [ login, setLogin ] = useState('');
-    const [ password, setpassword ] = useState('');
-    
-    interface currentUser {
-        login: string,
-        token: string,
-    }
-
-    /*
-    {
-    "login": "rafael@email.com",
-    "password": "123"
-    }
-    */
-    // function handleChangeLogin(log: string) {
-    //     login = log;
-    // }
-    
-    // function handleChangePassword(pass: string) {
-    //     password = pass;
-    // }
+    const [ password, setPassword ] = useState('');
 
     function alertErrorLogin(error: string) {
+        console.log(error);
         Alert.alert(
-            "Erro ao tentar efetuar login!",
-            `Erro: ${error}`,
+            "Error for login!",
+            `Details: ${error}`,
             [
                 {
                     text: "Ok",
@@ -41,7 +25,7 @@ export default function LoginPage({ navigation }: any) {
     }
 
     async function appLogin() {
-        console.log(`loggando ... ${login}:${password}`);
+        console.log(`loggging in ... ${login}:${password}`);
         const response = await fetch(
             'https://example-ecommerce.herokuapp.com/user/login', {
                 method: 'POST',
@@ -56,55 +40,46 @@ export default function LoginPage({ navigation }: any) {
             }
         );
         if (response.ok) {
-            let token: string = await response.text();
-            console.log(`login com sucesso: ${token}`);
+            let token: string = await response.text();  
+            console.log(`login success: ${token}`);
+            navigation.navigate('Product');
         } else {
-            alertErrorLogin(response.statusText);
+            alertErrorLogin((await response.text()).toString());
         }
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput style={styles.input} onChangeText={log => setLogin(log)}/>
-            <Text style={styles.label}>Senha</Text>
-            <TextInput 
+
+            <Image style={styles.image} source={require("../../../assets/ecommerce-logo.png")} />
+
+            <StatusBar style="auto" />
+            <View style={styles.inputView}>
+                <TextInput
+                style={styles.TextInput}
+                placeholder="Email."
+                placeholderTextColor="#003f5c"
+                onChangeText={(email) => setLogin(email)}
+                />
+            </View>
+ 
+            <View style={styles.inputView}>
+                <TextInput
+                style={styles.TextInput}
+                placeholder="Password."
+                placeholderTextColor="#003f5c"
                 secureTextEntry={true}
-                style={styles.input} onChangeText={pass => setpassword(pass)} />
-            <Button
-                color="#f194ff"
-                title="Logar"
-                onPress={appLogin}>
-                <Text>Entrar</Text>
-            </Button>
-            <Button
-                color="#f194ff"
-                title="Cadastrar"
-                onPress={() => navigation.navigate('Register')}>
-                <Text>Cadastrar</Text>
-            </Button>
+                onChangeText={(p) => setPassword(p)}
+                />
+            </View>
+        
+            <TouchableOpacity>
+                <Text style={styles.forgot_button} onPress={() => navigation.navigate('Register')}>Register</Text>
+            </TouchableOpacity>
+        
+            <TouchableOpacity style={styles.loginBtn} onPress={appLogin}>
+                <Text>SignIn</Text>
+            </TouchableOpacity>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-    },
-    label: {
-        fontSize: 20,
-        marginBottom: 5,
-    },
-    input: {
-        width: Dimensions.get('screen').width - 40,
-        paddingHorizontal: 10,
-        marginVertical: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        fontSize: 20,
-        height: 50,
-    },
-    button: {
-        marginVertical: 10,
-    }
-})
