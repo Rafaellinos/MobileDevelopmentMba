@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Button, FlatList, Text,
-    View, TextInput, StyleSheet, Dimensions, Alert} from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { Button, FlatList, Text, View } from 'react-native';
 
+import styles from './style';
 
 export default function ProdutoPage({ navigation }: any) {
 
     const [ produtos, setProdutos ] = useState();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <Button onPress={() => navigation.navigate('Home')} title="LogOut"/>
+          ),
+        });
+      }, [navigation]);
 
     useEffect(() => {
         getProducts();
@@ -27,44 +35,28 @@ export default function ProdutoPage({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Lista de Produtos</Text>
             <FlatList
                 data={produtos}
-                style={styles.list}
                 keyExtractor={item => item.name}
                 renderItem={({ item }) => (
-                    <View>
-                        <Text>{item.name}</Text>
-                        <Text>{item.price}</Text>
-                        <Text>{item.amount}</Text>
+                    <View style={styles.card}>
+                        <Text style={styles.productTitle}>{item.name}</Text>
+                        <Text>Fabricante: {item.factory.name}</Text>
+                        <View style={styles.Section}>
+                            <Text>Preço: </Text>
+                            <Text style={styles.price}>
+                                R$ {item.price.toFixed(2).replace('.', ',')}
+                            </Text>
+                        </View>
+                        <View style={styles.Section}>
+                            <Text>Quantidade em estoque: </Text>
+                                <Text style={styles.price}>
+                                    {item.amount}
+                                </Text>
+                        </View>
                     </View>
                 )}
             />
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-    },
-    list: {
-        width: Dimensions.get('window').width - 20
-    },
-    label: {
-        fontSize: 20,
-        marginBottom: 5,
-    },
-    input: {
-        width: Dimensions.get('screen').width - 40,
-        paddingHorizontal: 10,
-        marginVertical: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        fontSize: 20,
-        height: 50,
-    },
-    button: {
-        marginVertical: 10,
-    }
-})

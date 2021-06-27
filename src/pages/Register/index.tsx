@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from 'react';
-import { Button, FlatList, Text,
-    View, TextInput, StyleSheet, Dimensions, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView} from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, 
+    Alert, KeyboardAvoidingView, ScrollView} from 'react-native';
 
 import styles from './style';
 

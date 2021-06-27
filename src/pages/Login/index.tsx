@@ -1,9 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from 'react';
-import { Image, TouchableOpacity, Button, FlatList, Text, View, TextInput, StyleSheet, Dimensions, Alert} from 'react-native';
+import { Image, TouchableOpacity, Text, View, TextInput, Alert} from 'react-native';
 
 import styles from './style';
-import RegisterPage from '../Register';
 
 export default function LoginPage({ navigation }: any) {
 
